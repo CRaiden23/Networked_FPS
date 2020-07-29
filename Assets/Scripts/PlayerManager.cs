@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class PlayerManager : NetworkBehaviour
 {
-    [SyncVar]
+    [SyncVar] // syncVar tells network manager to sync this variable
     private bool _isDead = false;
     
     [SerializeField]
@@ -21,12 +21,23 @@ public class PlayerManager : NetworkBehaviour
     [SyncVar]
     private int _currentHealth;
 
-    [SerializeField] private Behaviour[] disableOnDeath;
-    private bool[] _wasEnabled;
+    [SerializeField] private Behaviour[] disableOnDeath; // list of components to disable on death
+    private bool[] _wasEnabled; // list of components' states prior to death
 
+    [SerializeField]
+    private MeshRenderer _playerGFX;
+
+    private void Awake()
+    {
+        if(_playerGFX != null)
+            _playerGFX = GetComponentInChildren<MeshRenderer>();
+    }
+        
+
+    //Setup on spawn
     public void Setup()
     {
-        _wasEnabled = new bool[disableOnDeath.Length];
+        _wasEnabled = new bool[disableOnDeath.Length]; // instantiate array to length of components to check
         
         for (int i = 0; i < _wasEnabled.Length; i++) // take states of components
             _wasEnabled[i] = disableOnDeath[i].enabled;
@@ -55,23 +66,29 @@ public class PlayerManager : NetworkBehaviour
         for (int i = 0; i < disableOnDeath.Length; i++) // disable components
             disableOnDeath[i].enabled = false;
         
-        Collider col = GetComponent<Collider>();
-        if (col != null)
-            col.enabled = false;
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null)
+            cc.detectCollisions = false;
+
+        // disable player graphics
+        _playerGFX.enabled = false;
         
-        Debug.Log(transform.name + "is DEAD!");
+        // instantiate a corpse
+        
+        Debug.Log(transform.name + " is DEAD!");
 
         StartCoroutine(Respawn());
     }
 
     IEnumerator Respawn()
     {
-        yield return new WaitForSeconds(GameManager.singleton.matchSettings.respawnTime);
-        
-        SetDefaults();
         Transform spawnPoint = NetworkManager.singleton.GetStartPosition();
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
+        
+        yield return new WaitForSeconds(GameManager.singleton.matchSettings.respawnTime);
+        
+        SetDefaults();
         
         Debug.Log(transform.name + " respawned.");
     }
@@ -84,9 +101,12 @@ public class PlayerManager : NetworkBehaviour
 
         for (int i = 0; i < disableOnDeath.Length; i++) // loop through components to their original state
             disableOnDeath[i].enabled = _wasEnabled[i];
+        
+        // reenable player graphics
+        _playerGFX.enabled = true;
 
-        Collider col = GetComponent<Collider>();
-        if (col != null)
-            col.enabled = true;
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null)
+            cc.detectCollisions = true;
     }
 }

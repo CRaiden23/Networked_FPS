@@ -16,16 +16,10 @@ public class playerNetSetup : NetworkBehaviour
     private string _remoteLayerName = "RemotePlayer";
 
     [SerializeField] 
-    private string _remoteGunLayerName = "RemoteGun";
-    
-    [SerializeField] 
     private string _dontDrawLayerName = "DontDraw";
 
     [SerializeField] 
     private GameObject _playerGFX;
-
-    [SerializeField] 
-    private GameObject _playerWeapon;
 
     [SerializeField] 
     private string _playerUISceneName = "UI";
@@ -37,8 +31,7 @@ public class playerNetSetup : NetworkBehaviour
         if (!isLocalPlayer) // is a remote player
         {
             DisableComponents();
-            AssignRemoteLayer(gameObject, LayerMask.NameToLayer(_remoteLayerName));
-            SetLayerRecursively(_playerWeapon, LayerMask.NameToLayer(_remoteGunLayerName)); // this might need to move to PlayerShoot.cs
+            Util.SetLayerRecursively(gameObject, LayerMask.NameToLayer(_remoteLayerName));
         }
         else // is a local player
         {
@@ -48,11 +41,11 @@ public class playerNetSetup : NetworkBehaviour
                 _sceneCamera.gameObject.SetActive(false);
             
             // Disable player GFX for Local
-            SetLayerRecursively(_playerGFX, LayerMask.NameToLayer(_dontDrawLayerName));
+            Util.SetLayerRecursively(_playerGFX, LayerMask.NameToLayer(_dontDrawLayerName));
             
             // Create PlayerUI
             if(!_playerUISceneName.Equals(""))
-                SceneManager.LoadScene(_playerUISceneName, LoadSceneMode.Additive);
+                SceneManager.LoadScene(_playerUISceneName, LoadSceneMode.Additive); // make this happen in a local function
             else
                 Debug.LogError("PlayerNetSetup: No UI Scene found");
         }
@@ -85,15 +78,5 @@ public class playerNetSetup : NetworkBehaviour
     {
         foreach (var component in componentsToDisable)
             component.enabled = false;
-    }
-
-    private void SetLayerRecursively(GameObject obj, int layer)
-    {
-        obj.layer = layer;
-
-        foreach (Transform child in obj.transform)
-        {
-            SetLayerRecursively(child.gameObject, layer);
-        }
     }
 }
