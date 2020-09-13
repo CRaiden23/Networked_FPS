@@ -12,6 +12,12 @@ public class GameManager : MonoBehaviour
     
     public MatchSettings matchSettings;
 
+    [SerializeField] 
+    private GameObject _sceneCamera;
+
+    [SerializeField] public List<PlayerWeapon> weaponLibrary;
+    
+
     private void Awake()
     {
         if (singleton != null)
@@ -23,6 +29,17 @@ public class GameManager : MonoBehaviour
         {
             singleton = this;
         }
+
+        if (_sceneCamera == null)
+            _sceneCamera = Camera.main.gameObject;
+    }
+
+    public void SetSceneCameraActive(bool isActive)
+    {
+        if (_sceneCamera == null)
+            return;
+        
+        _sceneCamera.SetActive(isActive);
     }
 
     #region PlayerTracking
