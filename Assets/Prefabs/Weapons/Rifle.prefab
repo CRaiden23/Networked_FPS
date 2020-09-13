@@ -1020,6 +1020,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1845672803159758631}
+  - component: {fileID: 3595358762117099586}
   m_Layer: 13
   m_Name: Graphics
   m_TagString: Untagged
@@ -1053,6 +1054,23 @@ Transform:
   m_Father: {fileID: 3270773621161685977}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3595358762117099586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8002461483587140149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e9868c5b3c5df4a91c324b65138824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muzzleFlash: {fileID: 3776311475715272257}
+  hitEffectPrefab: {fileID: 5069348819173674773, guid: f1c128bae3dec594abbf472f1bdc9b9c,
+    type: 3}
+  playerHitEffectPrefab: {fileID: 2296524279326079929, guid: 9ad110df3d7f38b4182c8c59234b90cd,
+    type: 3}
 --- !u!1001 &3776311475695743361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1113,6 +1131,12 @@ PrefabInstance:
 --- !u!4 &3776311475695872769 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 1af37966f4e95534c887596ea26f1e29,
+    type: 3}
+  m_PrefabInstance: {fileID: 3776311475695743361}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3776311475715272257 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 19800000, guid: 1af37966f4e95534c887596ea26f1e29,
     type: 3}
   m_PrefabInstance: {fileID: 3776311475695743361}
   m_PrefabAsset: {fileID: 0}

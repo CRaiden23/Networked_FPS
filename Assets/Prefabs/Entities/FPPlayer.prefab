@@ -279,6 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c339cd74f88b69e44869ddae0d06bdab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 8678302313091790950}
   _groundCheck: {fileID: 1258306120340335441}
   checkRadius: 0.2
   groundMask:
@@ -308,6 +309,9 @@ MonoBehaviour:
   _dontDrawLayerName: DontDraw
   _playerGFX: {fileID: 1258306119686916266}
   _playerUISceneName: UI
+  playerUIPrefab: {fileID: 8105740760180285512, guid: 65a13edad64900c49b9652546b90550e,
+    type: 3}
+  playerUIInstance: {fileID: 0}
 --- !u!114 &5873030551874451401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,7 +344,10 @@ MonoBehaviour:
   disableOnDeath:
   - {fileID: 1258306119253518592}
   - {fileID: 5873030551874451401}
-  _playerGFX: {fileID: 1258306119686916268}
+  disableGameObjectsOnDeath:
+  - {fileID: 1258306119686916266}
+  - {fileID: 1258306118691508805}
+  _DeathEffect: {fileID: 194062, guid: 8c27aeead6d968e4ba986702d6b84335, type: 3}
 --- !u!114 &8918838910320669016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,10 +365,23 @@ MonoBehaviour:
     damage: 10
     range: 100
     fireRate: 0
-    ammo: 8
+    maxAmmo: 8
+    reloadSpeedInSeconds: 1
+    currentAmmo: 8
     graphics: {fileID: 4325025552966197205, guid: 6c10f03d43a31374c8927bd6602bdf28,
       type: 3}
+  _currentWeapon:
+    name: Pistol
+    damage: 10
+    range: 100
+    fireRate: 0
+    maxAmmo: 8
+    reloadSpeedInSeconds: 1
+    currentAmmo: 8
+    graphics: {fileID: 0}
   _remoteGunLayerName: RemoteGun
+  _pickupTag: Pickup
+  _isReloading: 0
   weaponHolder: {fileID: 5377992266345940151}
 --- !u!1 &1258306119686916266
 GameObject:
@@ -481,6 +501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5377992266345940151}
+  - component: {fileID: 8678302313091790950}
   m_Layer: 11
   m_Name: CurrentWeapon
   m_TagString: Untagged
@@ -502,3 +523,22 @@ Transform:
   m_Father: {fileID: 1258306118691508792}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &8678302313091790950
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695290540743273229}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2d04d6d7060f1de458c3f1d982dc1fec, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 2
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

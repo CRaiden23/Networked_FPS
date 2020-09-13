@@ -23,8 +23,12 @@ public class playerNetSetup : NetworkBehaviour
 
     [SerializeField] 
     private string _playerUISceneName = "UI";
-    
-    private Camera _sceneCamera;
+
+    [SerializeField] 
+    private GameObject playerUIPrefab;
+
+    [HideInInspector]
+    public GameObject playerUIInstance;
     
     private void Start()
     {
@@ -35,22 +39,21 @@ public class playerNetSetup : NetworkBehaviour
         }
         else // is a local player
         {
-            _sceneCamera = Camera.main;
-
-            if (_sceneCamera != null)
-                _sceneCamera.gameObject.SetActive(false);
-            
             // Disable player GFX for Local
             Util.SetLayerRecursively(_playerGFX, LayerMask.NameToLayer(_dontDrawLayerName));
             
             // Create PlayerUI
-            if(!_playerUISceneName.Equals(""))
-                SceneManager.LoadScene(_playerUISceneName, LoadSceneMode.Additive); // make this happen in a local function
+            if (!_playerUISceneName.Equals(""))
+            {
+                SceneManager.LoadScene(_playerUISceneName, LoadSceneMode.Additive);
+                playerUIInstance = (GameObject)Instantiate(playerUIPrefab);
+                SceneManager.MoveGameObjectToScene(playerUIInstance, SceneManager.GetSceneByName(_playerUISceneName));
+            }
             else
                 Debug.LogError("PlayerNetSetup: No UI Scene found");
+            
+            GetComponent<PlayerManager>().PlayerSetup();
         }
-
-        GetComponent<PlayerManager>().Setup();
     }
 
     public override void OnStartClient()
@@ -65,11 +68,13 @@ public class playerNetSetup : NetworkBehaviour
 
     private void OnDisable()
     {
-        if (_sceneCamera != null)
-            _sceneCamera.gameObject.SetActive(true);
-
+        if (isLocalPlayer)
+        {
+            GameManager.singleton.SetSceneCameraActive(true); // activate scene camera on death
+            SceneManager.UnloadSceneAsync(_playerUISceneName);
+        }
+            
         GameManager.DeregisterPlayer(transform.name);
-        SceneManager.UnloadSceneAsync(_playerUISceneName);
     }
 
     private void AssignRemoteLayer(GameObject obj, int layer) => obj.layer = layer; // set layer to our remote layer

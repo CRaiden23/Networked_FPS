@@ -10,6 +10,8 @@ public class playerMovement : MonoBehaviour
     private Vector3 _velocity;
     
     private CharacterController _controller;
+    [SerializeField]
+    private Animator _animator;
     
     [SerializeField]
     public Transform _groundCheck;
@@ -60,5 +62,6 @@ public class playerMovement : MonoBehaviour
         
         #endregion
         
+        _animator.SetFloat("MoveSpeed", move.magnitude);
     }
 }

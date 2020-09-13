@@ -14,7 +14,7 @@ public class PlayerShoot : NetworkBehaviour
 
     private PlayerWeapon _currentWeapon;
     private WeaponManager _weaponManager;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +32,12 @@ public class PlayerShoot : NetworkBehaviour
     {
         _currentWeapon = _weaponManager.GetCurrentWeapon();
 
+        if (Input.GetButtonDown("Reload") && _currentWeapon.currentAmmo != _currentWeapon.maxAmmo)
+        {
+            _weaponManager.Reload();
+            return;
+        }
+        
         if (_currentWeapon.fireRate <= 0f)
         {
             if (Input.GetButtonDown("Fire1"))
@@ -42,17 +48,12 @@ public class PlayerShoot : NetworkBehaviour
             if (Input.GetButtonDown("Fire1"))
                 InvokeRepeating("Shoot", 0f, 1f/_currentWeapon.fireRate);
             else if (Input.GetButtonUp("Fire1"))
-            {
                 CancelInvoke(nameof(Shoot));
-            }
         }
     }
 
-    [Command]
-    void CmdOnShoot() // always called on shoot by the server
-    {
-        RpcDoShootEffect();
-    }
+    [Command] // always called on shoot by the server
+    void CmdOnShoot() => RpcDoShootEffect();
 
     [ClientRpc] // called on all clients when doing shoot effect
     void RpcDoShootEffect() => _weaponManager.getCurrentGraphics().muzzleFlash.Play();
@@ -80,8 +81,16 @@ public class PlayerShoot : NetworkBehaviour
     [Client] // happens only on clients
     void Shoot()
     {
-        if (!isLocalPlayer) // only local player decides when they shoot
+        if (!isLocalPlayer && !_weaponManager._isReloading) // only local player decides when they shoot
             return;
+
+        if (_currentWeapon.currentAmmo <= 0)
+        {
+            _weaponManager.Reload();
+            return;
+        }
+
+        _currentWeapon.currentAmmo--;
         
         CmdOnShoot();
 
@@ -98,8 +107,6 @@ public class PlayerShoot : NetworkBehaviour
                 CmdOnHit(hit.point, hit.normal);
                 
         }
-            
-                
     }
 
     [Command] // happens only on servers
