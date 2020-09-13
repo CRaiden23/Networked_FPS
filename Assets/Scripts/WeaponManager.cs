@@ -93,7 +93,9 @@ public class WeaponManager : NetworkBehaviour
         
         yield return new WaitForSeconds(_currentWeapon.reloadSpeedInSeconds);
         
-        anim.SetTrigger("DoneReloading");
+
+
+        CmdOnDoneReloading();
         
         _currentWeapon.currentAmmo = _currentWeapon.maxAmmo;
         
@@ -105,13 +107,28 @@ public class WeaponManager : NetworkBehaviour
     {
         RpcOnReload();
     }
-
+    
     [ClientRpc]
     void RpcOnReload()
     {
         if (anim != null)
         {
             anim.Play(Animator.StringToHash("ReloadAnim"));
+        }
+    }
+    
+    [Command]
+    void CmdOnDoneReloading()
+    {
+        RpcOnDoneReloading();
+    }
+    
+    [ClientRpc]
+    void RpcOnDoneReloading()
+    {
+        if (anim != null)
+        {
+            anim.SetTrigger("DoneReloading");
         }
     }
 }

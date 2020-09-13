@@ -143,4 +143,6 @@ public class PlayerManager : NetworkBehaviour
         if(wm != null)
             wm.EquipWeapon(wm._startingWeapon);
     }
+
+    public int GetHealth() => _currentHealth;
 }

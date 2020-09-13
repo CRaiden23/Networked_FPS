@@ -47,6 +47,8 @@ public class playerNetSetup : NetworkBehaviour
             {
                 SceneManager.LoadScene(_playerUISceneName, LoadSceneMode.Additive);
                 playerUIInstance = (GameObject)Instantiate(playerUIPrefab);
+                
+                playerUIInstance.GetComponent<PlayerUI>().SetPlayerManager(GetComponent<PlayerManager>());
                 SceneManager.MoveGameObjectToScene(playerUIInstance, SceneManager.GetSceneByName(_playerUISceneName));
             }
             else
